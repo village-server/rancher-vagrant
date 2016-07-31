@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
   # Create our Rancher Server
   server_ip = "#{$private_ip_prefix}.100"
   config.vm.define "server" do |server|
-    config.vm.box = 'rancherio/rancheros'
+    server.vm.box = 'rancherio/rancheros'
     server.vm.hostname = "rancher-server.box"
     server.vm.network :private_network, ip: "#{server_ip}"
     server.vm.network 'forwarded_port', guest: $expose_rancher_ui, host: $expose_rancher_ui, auto_correct: true

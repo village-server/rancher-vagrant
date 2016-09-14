@@ -21,11 +21,11 @@ Vagrant.configure("2") do |config|
 
 # Create our Rancher Host
   config.vm.define "rancher-host" do |server|
-    node.vm.box = "ubuntu/trusty64"
-    node.vm.hostname = "rancher-host"
-    node.vm.network "public_network"
+    server.vm.box = "ubuntu/trusty64"
+    server.vm.hostname = "rancher-host"
+    server.vm.network "public_network"
     # Have vagrant install docker for convenience
-    node.vm.provision "docker" do |d|
+    server.vm.provision "docker" do |d|
     end
   end
 

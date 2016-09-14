@@ -1,31 +1,14 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Rancher Workshop Demo
+# Create Rancher Compatible Host
 #
 
-# Allows setting of hostname in rancheros box, some helpers for setting IP addr
-require_relative 'vagrant_ros_guest_plugin.rb'
-
 # Config variables
-$number_of_nodes = 2
-$expose_rancher_ui = 8080
 $vb_gui = false
 $vb_memory = 1024
 $vb_cpus = 1
 $rsync_folder_disabled = true
-
-# Config for n-number of host nodes
-def config_node(node, hostname)
-  node.vm.box = "ubuntu/trusty64"
-  node.vm.hostname = hostname
-  node.vm.network "public_network", bridge: "en2: Wi-Fi (AirPort)"
-
-  # Have vagrant install docker for convenience
-  node.vm.provision "docker" do |d|
-  end
-
-end
 
 Vagrant.configure("2") do |config|
 
@@ -36,24 +19,13 @@ Vagrant.configure("2") do |config|
     vb.cpus = $vb_cpus
   end
 
-  # Create our Rancher Server
-  config.vm.define "server" do |server|
-    server.vm.box = 'rancherio/rancheros'
-    server.vm.hostname = "rancher-server.box"
-    server.vm.network :public_network, bridge: "en2: Wi-Fi (AirPort)"
-    server.vm.network 'forwarded_port', guest: $expose_rancher_ui, host: $expose_rancher_ui, auto_correct: true
+# Create our Rancher Host
+  config.vm.define "rancher-host" do |server|
+    server.vm.box = "ubuntu/trusty64"
+    server.vm.hostname = "rancher-host"
+    server.vm.network "public_network"
+    # Have vagrant install docker for convenience
     server.vm.provision "docker" do |d|
-      d.run "rancher/server:latest",
-      args: "--name=rancher-server -l io.rancher.container.system=rancher-agent --restart=always -d -p 8080:8080"
-    end
-  end
-
-  # Create host nodes
-  (1..$number_of_nodes).each do |i|
-    hostname_node = 'rancher-host-%02d' % i
-    # node_ip = "#{$private_ip_prefix}.#{400+i}"
-    config.vm.define hostname_node do |node|
-      config_node(node, hostname_node)
     end
   end
 

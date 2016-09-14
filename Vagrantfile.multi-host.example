@@ -19,7 +19,7 @@ $rsync_folder_disabled = true
 def config_node(node, hostname)
   node.vm.box = "ubuntu/trusty64"
   node.vm.hostname = hostname
-  node.vm.network "public_network", bridge: "en2: Wi-Fi (AirPort)"
+  node.vm.network "public_network"
 
   # Have vagrant install docker for convenience
   node.vm.provision "docker" do |d|
@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "server" do |server|
     server.vm.box = 'rancherio/rancheros'
     server.vm.hostname = "rancher-server.box"
-    server.vm.network :public_network, bridge: "en2: Wi-Fi (AirPort)"
+    server.vm.network :public_network
     server.vm.network 'forwarded_port', guest: $expose_rancher_ui, host: $expose_rancher_ui, auto_correct: true
     server.vm.provision "docker" do |d|
       d.run "rancher/server:latest",
